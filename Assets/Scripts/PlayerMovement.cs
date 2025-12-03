@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private float speed;
     private Rigidbody2D body;
 
     private void Awake()
@@ -11,6 +12,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        body.linearVelocity = new Vector3(Input.GetAxis("Horizontal") * 5f, body.linearVelocity.y);
+        body.linearVelocity = new Vector2(Input.GetAxis("Horizontal") * speed, body.linearVelocity.y);
     }
 }
