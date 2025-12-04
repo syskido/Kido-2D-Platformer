@@ -3,11 +3,13 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed;
+    [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer; // LayerMask ���
     [SerializeField] private LayerMask wallLayer; // LayerMask ���
     private Rigidbody2D body;
     private Animator anim; // Animation �� Animator�� ����
     private BoxCollider2D boxCollider; // BoxCollider2D ���
+    private float wallJumpCooldown;
 
     private void Awake()
     {
@@ -34,13 +36,41 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("run", horizontalInput != 0); // Animator���� SetBool ���
         anim.SetBool("grounded", isGrounded()); // Animator���� SetBool ���
 
-        print(onWall());
+        //Wall jump logic
+        if(wallJumpCooldown < 0.2f)
+        {            
+            body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
+
+            if (onWall()  && !isGrounded())
+            {
+                body.gravityScale = 0; 
+                body.linearVelocity = Vector2.zero;
+            }
+            else
+                body.gravityScale = 3;
+
+            if (Input.GetKey(KeyCode.Space))
+               Jump();              
+        }
+        else
+            wallJumpCooldown += Time.deltaTime;
+        {
+
+        }
     }
 
     private void Jump()
     {
-        body.linearVelocity = new Vector2(body.linearVelocity.x, speed);
-        anim.SetTrigger("jump"); // Animator���� SetTrigger ���
+        if (isGrounded())
+        {
+            body.linearVelocity = new Vector2(body.linearVelocity.x, jumpPower);
+            anim.SetTrigger("jump"); // Animator���� SetTrigger ���
+        }
+        else if (onWall() && !isGrounded()) 
+            {
+                 
+            }
+        
         
     }
 
