@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim; // Animation �� Animator�� ����
     private BoxCollider2D boxCollider; // BoxCollider2D ���
     private float wallJumpCooldown;
+    private float horizontalInput;
 
     private void Awake()
     {
@@ -21,7 +22,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
+        horizontalInput = Input.GetAxis("Horizontal");
         body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y); // linearVelocity �� velocity�� ����
 
         // Flip player when moving left/right
@@ -67,11 +68,17 @@ public class PlayerMovement : MonoBehaviour
             anim.SetTrigger("jump"); // Animator���� SetTrigger ���
         }
         else if (onWall() && !isGrounded()) 
+        {
+            if(horizontalInput == 0)
             {
-                 
+                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 0);
+                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             }
-        
-        
+            else
+                body.linearVelocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
+           
+            wallJumpCooldown = 0;            
+        }       
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
