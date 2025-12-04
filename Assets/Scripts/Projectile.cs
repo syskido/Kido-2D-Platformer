@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -7,13 +6,14 @@ public class Projectile : MonoBehaviour
     private float direction;
     private bool hit;
 
-    private BoxCollider2D boxcollider;
     private Animator anim;
+    private BoxCollider2D boxCollider;
+    
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
-        boxcollider = GetComponent<BoxCollider2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     private void Update()
@@ -25,24 +25,19 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         hit = true;
-        boxcollider.enabled = false;
+        boxCollider.enabled = false;
         anim.SetTrigger("explode");
-    }
-
-    private void Deactivate()
-    {
-        gameObject.SetActive(false);
-    }
+    }    
 
     public void SetDirection(float _direction)
     {
         direction = _direction;
         gameObject.SetActive(true);
         hit = false;
-        boxcollider.enabled = true;
+        boxCollider.enabled = true;
 
         float localScaleX = transform.localScale.x;
-        if (Mathf.Sign(localScaleX) != direction)
+        if (Mathf.Sign(localScaleX) != _direction)
         {
             localScaleX = -localScaleX;
         }
